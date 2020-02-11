@@ -4,7 +4,7 @@ import Clipboard from "clipboard"
 
 function App() {
   const [ctx, setCtx] = useState(null)
-  const [view, setView] = useState(null)
+  const [isShowImage, setIsShowImage] = useState(false)
 
   const canvasWidth = 800
   const canvasHeight = canvasWidth * 9 / 16
@@ -16,11 +16,11 @@ function App() {
     view.width = canvasWidth
     view.height = canvasHeight
 
-    setView(view)
     setCtx(view.getContext('2d'))
   }, [canvasHeight])
 
   const handleUploadImage = (e) => {
+    const view = document.querySelector('.canvas')
     ctx.clearRect(0, 0, view.width, view.height)
     const reader = new FileReader()
     const file = e.target.files[0]
@@ -35,7 +35,14 @@ function App() {
           ctx.fillStyle = fontColor
           ctx.fillText('L G T M', canvasWidth/2, canvasHeight/2)
           ctx.restore()
-          setCtx(ctx)
+
+          const data = view.toDataURL('image/jpeg')
+          const outputImage = new Image()
+          outputImage.src = data
+          outputImage.onload = () => {
+            setIsShowImage(true)
+            document.querySelector('.result').appendChild(outputImage)
+          }
         }
     }
     reader.readAsDataURL(file)
@@ -43,7 +50,7 @@ function App() {
 
   const handleCopy = () => {
     const view = document.querySelector('.canvas')
-    const data = view.toDataURL()
+    const data = view.toDataURL("image/jpeg")
     const copyText = `<img src='${data}' />`
     const clipboard = new Clipboard('.copy', {
       text: () => copyText
@@ -53,13 +60,21 @@ function App() {
     })
   }
 
+  let canvasClassName = "canvas"
+  let resultClassName = "result"
+  if(isShowImage) {
+    canvasClassName += " hide"
+  } else {
+    resultClassName += " hide"
+  }
   return (
     <>
       <div className="file-upload">
         <input onChange={handleUploadImage} type="file" accept=".jpg,.png" />
-        <button className="copy" onClick={handleCopy}>Copy</button>
+        <button className="copy" onClick={handleCopy}>Copy as html</button>
       </div>
-      <canvas className="canvas"></canvas>
+      <canvas className={canvasClassName} ></canvas>
+      <div className={resultClassName}/>
     </>
   )
 }
