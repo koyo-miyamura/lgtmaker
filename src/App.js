@@ -6,18 +6,13 @@ function App() {
   const [ctx, setCtx] = useState(null);
   const [isShowImage, setIsShowImage] = useState(false);
 
-  const canvasWidth = 800;
-  const canvasHeight = (canvasWidth * 9) / 16;
   const fontSizePx = 80;
   const fontColor = "#FFFFFF";
 
   useEffect(() => {
     const view = document.querySelector(".canvas");
-    view.width = canvasWidth;
-    view.height = canvasHeight;
-
     setCtx(view.getContext("2d"));
-  }, [canvasHeight]);
+  }, []);
 
   const handleUploadImage = e => {
     const view = document.querySelector(".canvas");
@@ -28,12 +23,14 @@ function App() {
       const image = new Image();
       image.src = reader.result;
       image.onload = () => {
-        ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+        view.width = image.width;
+        view.height = image.height;
+        ctx.drawImage(image, 0, 0, image.width, image.height);
         ctx.save();
         ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
         ctx.textAlign = "center";
         ctx.fillStyle = fontColor;
-        ctx.fillText("L G T M", canvasWidth / 2, canvasHeight / 2);
+        ctx.fillText("L G T M", image.width / 2, image.height / 2);
         ctx.restore();
 
         const data = view.toDataURL("image/jpeg");
