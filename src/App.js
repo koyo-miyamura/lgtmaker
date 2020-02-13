@@ -39,22 +39,19 @@ function App() {
         outputImage.onload = () => {
           setIsShowImage(true);
           document.querySelector(".result").appendChild(outputImage);
+
+          const data = view.toDataURL("image/jpeg");
+          const copyText = `<img src='${data}' />`;
+          const clipboard = new Clipboard(".copy", {
+            text: () => copyText
+          });
+          clipboard.on("success", () => {
+            alert("コピーしました");
+          });
         };
       };
     };
     reader.readAsDataURL(file);
-  };
-
-  const handleCopy = () => {
-    const view = document.querySelector(".canvas");
-    const data = view.toDataURL("image/jpeg");
-    const copyText = `<img src='${data}' />`;
-    const clipboard = new Clipboard(".copy", {
-      text: () => copyText
-    });
-    clipboard.on("success", () => {
-      alert("コピーしました");
-    });
   };
 
   let canvasClassName = "canvas";
@@ -68,9 +65,7 @@ function App() {
     <>
       <div className="file-upload">
         <input onChange={handleUploadImage} type="file" accept=".jpg,.png" />
-        <button className="copy" onClick={handleCopy}>
-          Copy as html
-        </button>
+        <button className="copy">Copy as html</button>
       </div>
       <canvas className={canvasClassName}></canvas>
       <div className={resultClassName} />
