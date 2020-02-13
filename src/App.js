@@ -42,10 +42,10 @@ function App() {
         ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
         ctx.textAlign = "center";
         ctx.fillStyle = fontColor;
-        ctx.fillText(lgtmText, image.width / 2, image.height / 2);
+        ctx.fillText(lgtmText, image.width / 2, image.height / 2, image.width);
         ctx.lineWidth = 1.5;
         ctx.strokeStyle = strokeColor;
-        ctx.strokeText(lgtmText, image.width / 2, image.height / 2);
+        ctx.strokeText(lgtmText, image.width / 2, image.height / 2, image.width);
         ctx.restore();
 
         // canvasのままだとコピーなどができないので、img要素として出力
