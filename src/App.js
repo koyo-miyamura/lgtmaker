@@ -74,6 +74,15 @@ function App() {
     reader.readAsDataURL(file);
   };
 
+  const handleClickDownload = () => {
+    if (!isShowImage) return;
+    const view = document.querySelector(".canvas");
+    const a = document.createElement("a");
+    a.href = view.toDataURL("image/jpeg");
+    a.download = `LGTM.jpg`;
+    a.click();
+  };
+
   let canvasClassName = "canvas";
   let resultClassName = "result";
   if (isShowImage) {
@@ -86,6 +95,9 @@ function App() {
       <div className="file-upload">
         <input onChange={handleUploadImage} type="file" accept=".jpg,.png" />
         <button className="copy">Copy as html</button>
+        <button className="download" onClick={handleClickDownload}>
+          Download
+        </button>
       </div>
       <canvas className={canvasClassName}></canvas>
       <div className={resultClassName} />
