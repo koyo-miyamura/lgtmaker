@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import "App.css";
 import Clipboard from "clipboard";
+import Fileupload from "Fileupload";
+import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography } from "@material-ui/core";
+import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
+import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
+import Box from "@material-ui/core/Box";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -12,9 +17,9 @@ function App() {
     strokeColor: "#000000"
   };
 
-  const handleUploadImage = e => {
+  const handleUploadImage = files => {
     const reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
+    reader.readAsDataURL(files[0]);
     reader.onloadend = () => {
       generateImage(reader.result);
     };
@@ -104,19 +109,35 @@ function App() {
 
   return (
     <>
-      <div className="file-upload">
-        <input onChange={handleUploadImage} type="file" accept=".jpg,.png" />
-        {isLoaded && (
-          <>
-            <button className="copy">Copy as html</button>
-            <button className="download" onClick={handleClickDownload}>
-              Download
-            </button>
-          </>
-        )}
-      </div>
-      <canvas className="canvas" hidden></canvas>
-      <div className="result" />
+      <CssBaseline />
+      <Container maxWidth="sm">
+        <Box my={4}>
+          <Box mb={2}>
+            <Paper variant="outlined" elevation={3} square>
+              <Fileupload handleUploadFile={handleUploadImage} />
+            </Paper>
+          </Box>
+          <Box mb={2}>
+            <Grid container alignItems="center" justify="center">
+              {isLoaded && (
+                <ButtonGroup color="primary" aria-label="outlined primary button group">
+                  <Button className="copy">
+                    <FileCopyIcon />
+                    <Typography>Copy as html</Typography>
+                  </Button>
+                  <Button className="download" onClick={handleClickDownload}>
+                    <CloudDownloadIcon /> Download
+                  </Button>
+                </ButtonGroup>
+              )}
+            </Grid>
+          </Box>
+          <Grid container alignItems="center" justify="center">
+            <Grid item conponemt="div" className="result" />
+          </Grid>
+          <canvas className="canvas" hidden></canvas>
+        </Box>
+      </Container>
     </>
   );
 }
