@@ -106,10 +106,14 @@ function App() {
     <>
       <div className="file-upload">
         <input onChange={handleUploadImage} type="file" accept=".jpg,.png" />
-        <button className="copy">Copy as html</button>
-        <button className="download" onClick={handleClickDownload}>
-          Download
-        </button>
+        {isLoaded && (
+          <>
+            <button className="copy">Copy as html</button>
+            <button className="download" onClick={handleClickDownload}>
+              Download
+            </button>
+          </>
+        )}
       </div>
       <canvas className="canvas" hidden></canvas>
       <div className="result" />
