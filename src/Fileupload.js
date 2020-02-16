@@ -5,7 +5,7 @@ import { Typography } from "@material-ui/core";
 
 function FileUpload(props) {
   const onDrop = useCallback(props.handleUploadFile, []);
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: ".jpeg,.png" });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: ".jpeg, .jpg, .png" });
 
   return (
     <div {...getRootProps()}>
