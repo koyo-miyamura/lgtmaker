@@ -4,7 +4,7 @@ import Clipboard from "clipboard";
 
 function App() {
   const [ctx, setCtx] = useState(null);
-  const [isShowImage, setIsShowImage] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const fontSizePx = 100;
   const fontColor = "#FFFFFF";
@@ -53,7 +53,7 @@ function App() {
         const outputImage = new Image();
         outputImage.src = data;
         outputImage.onload = () => {
-          setIsShowImage(true);
+          setIsLoaded(true);
           const node = document.querySelector(".result");
           if (!node.firstChild) {
             node.appendChild(outputImage);
@@ -75,7 +75,7 @@ function App() {
   };
 
   const handleClickDownload = () => {
-    if (!isShowImage) return;
+    if (!isLoaded) return;
     const view = document.querySelector(".canvas");
     const a = document.createElement("a");
     a.href = view.toDataURL("image/jpeg");
@@ -83,13 +83,6 @@ function App() {
     a.click();
   };
 
-  let canvasClassName = "canvas";
-  let resultClassName = "result";
-  if (isShowImage) {
-    canvasClassName += " hide";
-  } else {
-    resultClassName += " hide";
-  }
   return (
     <>
       <div className="file-upload">
@@ -99,8 +92,8 @@ function App() {
           Download
         </button>
       </div>
-      <canvas className={canvasClassName}></canvas>
-      <div className={resultClassName} />
+      <canvas className="canvas" hidden></canvas>
+      <div className="result" />
     </>
   );
 }
