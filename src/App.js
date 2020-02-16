@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Clipboard from "clipboard";
 
 function App() {
-  const [ctx, setCtx] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const settings = {
@@ -12,11 +11,6 @@ function App() {
     fontColor: "#FFFFFF",
     strokeColor: "#000000"
   };
-
-  useEffect(() => {
-    const view = document.querySelector(".canvas");
-    setCtx(view.getContext("2d"));
-  }, []);
 
   const handleUploadImage = e => {
     const reader = new FileReader();
@@ -36,12 +30,20 @@ function App() {
 
   const drawImage = image => {
     const view = document.querySelector(".canvas");
+    const ctx = view.getContext("2d");
+
     ctx.clearRect(0, 0, view.width, view.height);
 
     // imageの大きさに合わせてcanvasのリサイズ
     view.width = image.width;
     view.height = image.height;
 
+    drawBaseImage(ctx, image);
+    drawLgtmTextOverImage(ctx, image);
+    renderGeneratedImage(view.toDataURL("image/jpeg"));
+  };
+
+  const drawBaseImage = (ctx, image) => {
     // jpeg出力だと背景色が黒になるので、あらかじめ白で塗りつぶす
     ctx.save();
     ctx.fillStyle = "#FFFFFF";
@@ -49,12 +51,9 @@ function App() {
     ctx.restore();
 
     ctx.drawImage(image, 0, 0, image.width, image.height);
-
-    drawLgtmTextOverImage(image);
-    renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
-  const drawLgtmTextOverImage = image => {
+  const drawLgtmTextOverImage = (ctx, image) => {
     ctx.save();
     ctx.font = `bolder ${settings.fontSizePx}px 'MS Pゴシック'`;
     ctx.textAlign = "center";
