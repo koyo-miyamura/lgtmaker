@@ -107,35 +107,47 @@ function App() {
     a.click();
   };
 
+  const InputFile = () => {
+    return (
+      <Box mb={2}>
+        <Paper variant="outlined" elevation={3} square>
+          <Fileupload handleUploadFile={handleUploadImage} />
+        </Paper>
+      </Box>
+    );
+  };
+
+  const Buttons = () => {
+    return (
+      <Grid container alignItems="center" justify="center">
+        {isLoaded && (
+          <ButtonGroup color="primary" aria-label="outlined primary button group">
+            <Button className="copy">
+              <FileCopyIcon />
+              <Typography variant="button" style={{ textTransform: "none" }}>
+                Copy as html
+              </Typography>
+            </Button>
+            <Button className="download" onClick={handleClickDownload}>
+              <CloudDownloadIcon />
+              <Typography variant="button" style={{ textTransform: "none" }}>
+                Download
+              </Typography>
+            </Button>
+          </ButtonGroup>
+        )}
+      </Grid>
+    );
+  };
+
   return (
     <>
       <CssBaseline />
       <Container maxWidth="sm">
         <Box my={4}>
+          <InputFile />
           <Box mb={2}>
-            <Paper variant="outlined" elevation={3} square>
-              <Fileupload handleUploadFile={handleUploadImage} />
-            </Paper>
-          </Box>
-          <Box mb={2}>
-            <Grid container alignItems="center" justify="center">
-              {isLoaded && (
-                <ButtonGroup color="primary" aria-label="outlined primary button group">
-                  <Button className="copy">
-                    <FileCopyIcon />
-                    <Typography variant="button" style={{ textTransform: "none" }}>
-                      Copy as html
-                    </Typography>
-                  </Button>
-                  <Button className="download" onClick={handleClickDownload}>
-                    <CloudDownloadIcon />
-                    <Typography variant="button" style={{ textTransform: "none" }}>
-                      Download
-                    </Typography>
-                  </Button>
-                </ButtonGroup>
-              )}
-            </Grid>
+            <Buttons />
           </Box>
           <Grid container alignItems="center" justify="center">
             <Grid item conponemt="div" className="result" />
