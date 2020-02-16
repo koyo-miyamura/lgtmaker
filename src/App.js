@@ -123,10 +123,15 @@ function App() {
                 <ButtonGroup color="primary" aria-label="outlined primary button group">
                   <Button className="copy">
                     <FileCopyIcon />
-                    <Typography>Copy as html</Typography>
+                    <Typography variant="button" style={{ textTransform: "none" }}>
+                      Copy as html
+                    </Typography>
                   </Button>
                   <Button className="download" onClick={handleClickDownload}>
-                    <CloudDownloadIcon /> Download
+                    <CloudDownloadIcon />
+                    <Typography variant="button" style={{ textTransform: "none" }}>
+                      Download
+                    </Typography>
                   </Button>
                 </ButtonGroup>
               )}
