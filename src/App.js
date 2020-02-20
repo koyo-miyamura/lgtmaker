@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "App.css";
 import Clipboard from "clipboard";
 import Fileupload from "Fileupload";
-import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography } from "@material-ui/core";
+import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Box from "@material-ui/core/Box";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+
+  const inputUrlEl = useRef(null);
 
   const settings = {
     lgtmText: "L G T M",
@@ -27,6 +29,7 @@ function App() {
 
   const generateImage = file => {
     const image = new Image();
+    image.crossOrigin = "Anonymous";
     image.src = file;
     image.onload = () => {
       drawImage(image);
@@ -107,6 +110,31 @@ function App() {
     a.click();
   };
 
+  const handleUploadImageFromURL = () => {
+    generateImage(inputUrlEl.current.value);
+  };
+
+  const InputURL = () => {
+    return (
+      <Box mb={2}>
+        <Paper variant="outlined" elevation={3} square>
+          <Grid container spacing={2}>
+            <Grid item xs={10}>
+              <TextField inputRef={inputUrlEl} label="URL" placeholder="URL" variant="outlined" fullWidth />
+            </Grid>
+            <Grid item xs={2}>
+              <Button color="primary" style={{ height: "100%" }} onClick={handleUploadImageFromURL} fullWidth>
+                <Typography variant="button" style={{ textTransform: "none" }}>
+                  Submit
+                </Typography>
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Box>
+    );
+  };
+
   const InputFile = () => {
     return (
       <Box mb={2}>
@@ -145,6 +173,7 @@ function App() {
       <CssBaseline />
       <Container maxWidth="sm">
         <Box my={4}>
+          <InputURL />
           <InputFile />
           <Box mb={2}>
             <Buttons />
