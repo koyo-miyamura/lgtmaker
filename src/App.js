@@ -118,11 +118,11 @@ function App() {
     return (
       <Box mb={2}>
         <Paper variant="outlined" elevation={3} square>
-          <Grid container spacing={2}>
-            <Grid item xs={10}>
+          <Grid container>
+            <Grid item sm={10} xs={9}>
               <TextField inputRef={inputUrlEl} label="URL" placeholder="URL" variant="outlined" fullWidth />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item sm={2} xs={3}>
               <Button color="primary" style={{ height: "100%" }} onClick={handleUploadImageFromURL} fullWidth>
                 <Typography variant="button" style={{ textTransform: "none" }}>
                   Submit
