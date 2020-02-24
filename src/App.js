@@ -6,15 +6,18 @@ import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, T
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Box from "@material-ui/core/Box";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [fontSizePx, setFontSizePx] = useState(100);
 
   const inputUrlEl = useRef(null);
 
   const settings = {
     lgtmText: "L G T M",
-    fontSizePx: 100,
+    fontSizePx: fontSizePx,
     fontColor: "#FFFFFF",
     strokeColor: "#000000"
   };
@@ -33,6 +36,9 @@ function App() {
     image.src = file;
     image.onload = () => {
       drawImage(image);
+    };
+    image.onerror = () => {
+      setIsError(true);
     };
   };
 
@@ -111,12 +117,25 @@ function App() {
   };
 
   const handleUploadImageFromURL = () => {
+    setIsError(false);
     generateImage(inputUrlEl.current.value);
+  };
+
+  const AlertError = () => {
+    return (
+      <Box mb={2}>
+        <Alert severity="error" onClose={() => setIsError(false)}>
+          <AlertTitle>Error</AlertTitle>
+          このURLからは画像を読み込めません。別のURLを試してね＞＜
+        </Alert>
+      </Box>
+    );
   };
 
   const InputURL = () => {
     return (
       <Box mb={2}>
+        {isError && <AlertError />}
         <Paper variant="outlined" elevation={3} square>
           <Grid container>
             <Grid item sm={10} xs={9}>
