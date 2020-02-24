@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import "App.css";
 import Clipboard from "clipboard";
 import Fileupload from "Fileupload";
@@ -6,9 +6,13 @@ import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, T
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Box from "@material-ui/core/Box";
+import useFetchData from "useFetchData";
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [url, setUrl] = useState(null);
+
+  const { base64Image } = useFetchApp(url);
 
   const inputUrlEl = useRef(null);
 
@@ -111,7 +115,7 @@ function App() {
   };
 
   const handleUploadImageFromURL = () => {
-    generateImage(inputUrlEl.current.value);
+    setUrl(inputUrlEl.current.value);
   };
 
   const InputURL = () => {
@@ -180,6 +184,7 @@ function App() {
           </Box>
           <Grid container alignItems="center" justify="center">
             <Grid item conponemt="div" className="result" />
+            <img src={`data:image/png;base64,${base64Image}`} alt="result" />
           </Grid>
           <canvas className="canvas" hidden></canvas>
         </Box>
@@ -187,5 +192,29 @@ function App() {
     </>
   );
 }
+
+const useFetchApp = url => {
+  let host = "http://localhost:12345";
+
+  const opts = useMemo(() => {
+    return {
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/x-www-form-urlencoded"
+      }),
+      body: `url=${url}&key=hoge`
+    };
+  }, [url]);
+
+  // url が定義されていなければuseFetchDataを何もさせないためにhostもnullにする
+  if (!url) {
+    host = null;
+  }
+  const { data, error, loading } = useFetchData(host, opts);
+  if (data) {
+    return { base64Image: data.base64, error, loading };
+  }
+  return { base64Image: null, error, loading };
+};
 
 export default App;
