@@ -167,22 +167,20 @@ function App() {
   const Buttons = () => {
     return (
       <Grid container alignItems="center" justify="center">
-        {isLoaded && (
-          <ButtonGroup color="primary" aria-label="outlined primary button group">
-            <Button className="copy">
-              <FileCopyIcon />
-              <Typography variant="button" style={{ textTransform: "none" }}>
-                Copy as html
-              </Typography>
-            </Button>
-            <Button className="download" onClick={handleClickDownload}>
-              <CloudDownloadIcon />
-              <Typography variant="button" style={{ textTransform: "none" }}>
-                Download
-              </Typography>
-            </Button>
-          </ButtonGroup>
-        )}
+        <ButtonGroup color="primary" aria-label="outlined primary button group">
+          <Button className="copy">
+            <FileCopyIcon />
+            <Typography variant="button" style={{ textTransform: "none" }}>
+              Copy as html
+            </Typography>
+          </Button>
+          <Button className="download" onClick={handleClickDownload}>
+            <CloudDownloadIcon />
+            <Typography variant="button" style={{ textTransform: "none" }}>
+              Download
+            </Typography>
+          </Button>
+        </ButtonGroup>
       </Grid>
     );
   };
@@ -194,9 +192,7 @@ function App() {
         <Box my={4}>
           <InputURL />
           <InputFile />
-          <Box mb={2}>
-            <Buttons />
-          </Box>
+          <Box mb={2}>{isLoaded && <Buttons />}</Box>
           <Grid container alignItems="center" justify="center">
             <Grid item conponemt="div" className="result" />
           </Grid>
