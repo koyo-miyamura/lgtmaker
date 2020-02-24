@@ -194,15 +194,16 @@ function App() {
 }
 
 const useFetchApp = url => {
-  let host = "http://localhost:12345";
+  let host = "https://koyo-image-getter.herokuapp.com/";
 
   const opts = useMemo(() => {
+    const apiKey = process.env.REACT_APP_API_KEY;
     return {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/x-www-form-urlencoded"
       }),
-      body: `url=${url}&key=hoge`
+      body: `url=${url}&key=${apiKey}`
     };
   }, [url]);
 
