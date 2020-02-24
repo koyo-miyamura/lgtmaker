@@ -2,25 +2,39 @@ import React, { useState, useRef } from "react";
 import "App.css";
 import Clipboard from "clipboard";
 import Fileupload from "Fileupload";
-import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  CssBaseline,
+  Paper,
+  ButtonGroup,
+  Grid,
+  Typography,
+  TextField,
+  Slider
+} from "@material-ui/core";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Box from "@material-ui/core/Box";
 import { Alert, AlertTitle } from "@material-ui/lab";
+import ColorPicker from "material-ui-color-picker";
 
 function App() {
+  const defaultSetting = {
+    fontSizePx: 100,
+    fontColor: "#FFFFFF"
+  };
+
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [fontSizePx, setFontSizePx] = useState(100);
+  const [fontSizePx, setFontSizePx] = useState(defaultSetting.fontSizePx);
+  const [fontColor, setFontColor] = useState(defaultSetting.fontColor);
+  const [baseImage, setBaseImage] = useState(null);
 
   const inputUrlEl = useRef(null);
 
-  const settings = {
-    lgtmText: "L G T M",
-    fontSizePx: fontSizePx,
-    fontColor: "#FFFFFF",
-    strokeColor: "#000000"
-  };
+  const lgtmText = "L G T M";
+  const strokeColor = "#000000";
 
   const handleUploadImage = files => {
     const reader = new FileReader();
@@ -35,14 +49,17 @@ function App() {
     image.crossOrigin = "Anonymous";
     image.src = file;
     image.onload = () => {
-      drawImage(image);
+      setBaseImage(image);
+      setFontSizePx(defaultSetting.fontSizePx);
+      setFontColor(defaultSetting.fontColor);
+      drawImage(image, defaultSetting.fontSizePx, defaultSetting.fontColor);
     };
     image.onerror = () => {
       setIsError(true);
     };
   };
 
-  const drawImage = image => {
+  const drawImage = (image, fontSizePx, fontColor) => {
     const view = document.querySelector(".canvas");
     const ctx = view.getContext("2d");
 
@@ -53,7 +70,7 @@ function App() {
     view.height = image.height;
 
     drawBaseImage(ctx, image);
-    drawLgtmTextOverImage(ctx, image);
+    drawLgtmTextOverImage(ctx, image, fontSizePx, fontColor);
     renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
@@ -67,15 +84,16 @@ function App() {
     ctx.drawImage(image, 0, 0, image.width, image.height);
   };
 
-  const drawLgtmTextOverImage = (ctx, image) => {
+  const drawLgtmTextOverImage = (ctx, image, fontSizePx, fontColor) => {
     ctx.save();
-    ctx.font = `bolder ${settings.fontSizePx}px 'MS Pゴシック'`;
+    ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
     ctx.textAlign = "center";
-    ctx.fillStyle = settings.fontColor;
-    ctx.fillText(settings.lgtmText, image.width / 2, image.height / 2, image.width);
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = fontColor;
+    ctx.fillText(lgtmText, image.width / 2, image.height / 2, image.width);
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = settings.strokeColor;
-    ctx.strokeText(settings.lgtmText, image.width / 2, image.height / 2, image.width);
+    ctx.strokeStyle = strokeColor;
+    ctx.strokeText(lgtmText, image.width / 2, image.height / 2, image.width);
     ctx.restore();
   };
 
@@ -119,6 +137,16 @@ function App() {
   const handleUploadImageFromURL = () => {
     setIsError(false);
     generateImage(inputUrlEl.current.value);
+  };
+
+  const handleChangeColor = color => {
+    setFontColor(color);
+    drawImage(baseImage, fontSizePx, color);
+  };
+
+  const handleChangeFontSizePx = (_, value) => {
+    setFontSizePx(value);
+    drawImage(baseImage, value, fontColor);
   };
 
   const AlertError = () => {
@@ -185,6 +213,21 @@ function App() {
     );
   };
 
+  const ControlPanel = () => {
+    return (
+      <>
+        <Box mb={2}>
+          <Typography gutterBottom>Color</Typography>
+          <ColorPicker name="color" placeholder="color" defaultValue={fontColor} onChange={handleChangeColor} />
+        </Box>
+        <Box>
+          <Typography gutterBottom>FontSize</Typography>
+          <Slider value={fontSizePx} max={500} onChangeCommitted={handleChangeFontSizePx} valueLabelDisplay="auto" />
+        </Box>
+      </>
+    );
+  };
+
   return (
     <>
       <CssBaseline />
@@ -192,7 +235,12 @@ function App() {
         <Box my={4}>
           <InputURL />
           <InputFile />
-          <Box mb={2}>{isLoaded && <Buttons />}</Box>
+          {isLoaded && (
+            <Box mb={2}>
+              <Buttons />
+              <ControlPanel />
+            </Box>
+          )}
           <Grid container alignItems="center" justify="center">
             <Grid item conponemt="div" className="result" />
           </Grid>
