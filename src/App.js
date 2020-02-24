@@ -22,13 +22,15 @@ import ColorPicker from "material-ui-color-picker";
 function App() {
   const defaultSetting = {
     fontSizePx: 100,
-    fontColor: "#FFFFFF"
+    fontColor: "#FFFFFF",
+    scale: 1.0
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
   const [fontSizePx, setFontSizePx] = useState(defaultSetting.fontSizePx);
   const [fontColor, setFontColor] = useState(defaultSetting.fontColor);
+  const [scale, setScale] = useState(defaultSetting.setScale);
   const [baseImage, setBaseImage] = useState(null);
 
   const inputUrlEl = useRef(null);
@@ -52,48 +54,49 @@ function App() {
       setBaseImage(image);
       setFontSizePx(defaultSetting.fontSizePx);
       setFontColor(defaultSetting.fontColor);
-      drawImage(image, defaultSetting.fontSizePx, defaultSetting.fontColor);
+      setScale(defaultSetting.scale);
+      drawImage(image, defaultSetting.fontSizePx, defaultSetting.fontColor, defaultSetting.scale);
     };
     image.onerror = () => {
       setIsError(true);
     };
   };
 
-  const drawImage = (image, fontSizePx, fontColor) => {
+  const drawImage = (image, fontSizePx, fontColor, scale) => {
     const view = document.querySelector(".canvas");
     const ctx = view.getContext("2d");
 
     ctx.clearRect(0, 0, view.width, view.height);
 
-    // imageの大きさに合わせてcanvasのリサイズ
-    view.width = image.width;
-    view.height = image.height;
+    // imageの大きさとスケーリングを考慮した大きさでcanvasのリサイズ
+    view.width = image.width * scale;
+    view.height = image.height * scale;
 
-    drawBaseImage(ctx, image);
-    drawLgtmTextOverImage(ctx, image, fontSizePx, fontColor);
+    drawBaseImage(ctx, image, view);
+    drawLgtmTextOverImage(ctx, image, fontSizePx, fontColor, view);
     renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
-  const drawBaseImage = (ctx, image) => {
+  const drawBaseImage = (ctx, image, view) => {
     // jpeg出力だと背景色が黒になるので、あらかじめ白で塗りつぶす
     ctx.save();
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(0, 0, image.width, image.height);
+    ctx.fillRect(0, 0, view.width, view.height);
     ctx.restore();
 
-    ctx.drawImage(image, 0, 0, image.width, image.height);
+    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, view.width, view.height);
   };
 
-  const drawLgtmTextOverImage = (ctx, image, fontSizePx, fontColor) => {
+  const drawLgtmTextOverImage = (ctx, image, fontSizePx, fontColor, view) => {
     ctx.save();
     ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = fontColor;
-    ctx.fillText(lgtmText, image.width / 2, image.height / 2, image.width);
+    ctx.fillText(lgtmText, view.width / 2, view.height / 2, view.width);
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = strokeColor;
-    ctx.strokeText(lgtmText, image.width / 2, image.height / 2, image.width);
+    ctx.strokeText(lgtmText, view.width / 2, view.height / 2, view.width);
     ctx.restore();
   };
 
@@ -141,12 +144,17 @@ function App() {
 
   const handleChangeColor = color => {
     setFontColor(color);
-    drawImage(baseImage, fontSizePx, color);
+    drawImage(baseImage, fontSizePx, color, scale);
   };
 
   const handleChangeFontSizePx = (_, value) => {
     setFontSizePx(value);
-    drawImage(baseImage, value, fontColor);
+    drawImage(baseImage, value, fontColor, scale);
+  };
+
+  const handleChangeScale = (_, value) => {
+    setScale(value);
+    drawImage(baseImage, fontSizePx, fontColor, value);
   };
 
   const AlertError = () => {
@@ -223,6 +231,10 @@ function App() {
         <Box>
           <Typography gutterBottom>FontSize</Typography>
           <Slider value={fontSizePx} max={500} onChangeCommitted={handleChangeFontSizePx} valueLabelDisplay="auto" />
+        </Box>
+        <Box>
+          <Typography gutterBottom>Scale</Typography>
+          <Slider value={scale} max={3.0} step={0.1} onChangeCommitted={handleChangeScale} valueLabelDisplay="auto" />
         </Box>
       </>
     );
