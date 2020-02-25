@@ -73,7 +73,7 @@ function App() {
     view.height = image.height * scale;
 
     drawBaseImage(ctx, image, view);
-    drawLgtmTextOverImage(ctx, image, fontSizePx, fontColor, view);
+    drawLgtmTextOverImage(ctx, fontSizePx, fontColor, view);
     renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
@@ -87,7 +87,7 @@ function App() {
     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, view.width, view.height);
   };
 
-  const drawLgtmTextOverImage = (ctx, image, fontSizePx, fontColor, view) => {
+  const drawLgtmTextOverImage = (ctx, fontSizePx, fontColor, view) => {
     ctx.save();
     ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
     ctx.textAlign = "center";
