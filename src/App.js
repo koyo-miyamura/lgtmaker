@@ -2,22 +2,12 @@ import React, { useState, useRef } from "react";
 import "App.css";
 import Clipboard from "clipboard";
 import Fileupload from "Fileupload";
-import {
-  Button,
-  Container,
-  CssBaseline,
-  Paper,
-  ButtonGroup,
-  Grid,
-  Typography,
-  TextField,
-  Slider
-} from "@material-ui/core";
+import ControlPanel from "ContorolPanel";
+import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
 import Box from "@material-ui/core/Box";
 import { Alert, AlertTitle } from "@material-ui/lab";
-import ColorPicker from "material-ui-color-picker";
 
 function App() {
   const defaultSetting = {
@@ -28,10 +18,8 @@ function App() {
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [fontSizePx, setFontSizePx] = useState(defaultSetting.fontSizePx);
-  const [fontColor, setFontColor] = useState(defaultSetting.fontColor);
-  const [scale, setScale] = useState(defaultSetting.setScale);
   const [baseImage, setBaseImage] = useState(null);
+  const [setting, setSetting] = useState(defaultSetting);
 
   const inputUrlEl = useRef(null);
 
@@ -52,10 +40,7 @@ function App() {
     image.src = file;
     image.onload = () => {
       setBaseImage(image);
-      setFontSizePx(defaultSetting.fontSizePx);
-      setFontColor(defaultSetting.fontColor);
-      setScale(defaultSetting.scale);
-      drawImage(image, defaultSetting.fontSizePx, defaultSetting.fontColor, defaultSetting.scale);
+      drawImage(image, setting.fontSizePx, setting.fontColor, setting.scale);
     };
     image.onerror = () => {
       setIsError(true);
@@ -89,7 +74,7 @@ function App() {
 
   const drawLgtmTextOverImage = (ctx, fontSizePx, fontColor, view) => {
     ctx.save();
-    ctx.font = `bolder ${fontSizePx}px 'MS Pゴシック'`;
+    ctx.font = `bolder ${fontSizePx}px "Helvetica", "MS Pゴシック"`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = fontColor;
@@ -142,19 +127,13 @@ function App() {
     generateImage(inputUrlEl.current.value);
   };
 
-  const handleChangeColor = color => {
-    setFontColor(color);
-    drawImage(baseImage, fontSizePx, color, scale);
-  };
-
-  const handleChangeFontSizePx = (_, value) => {
-    setFontSizePx(value);
-    drawImage(baseImage, value, fontColor, scale);
-  };
-
-  const handleChangeScale = (_, value) => {
-    setScale(value);
-    drawImage(baseImage, fontSizePx, fontColor, value);
+  const handleChangeSettings = setting => {
+    drawImage(baseImage, setting.fontSizePx, setting.fontColor, setting.scale);
+    setSetting({
+      fontSizePx: setting.fontSizePx,
+      fontColor: setting.fontColor,
+      scale: setting.scale
+    });
   };
 
   const AlertError = () => {
@@ -221,25 +200,6 @@ function App() {
     );
   };
 
-  const ControlPanel = () => {
-    return (
-      <>
-        <Box mb={2}>
-          <Typography gutterBottom>Color</Typography>
-          <ColorPicker name="color" placeholder="color" defaultValue={fontColor} onChange={handleChangeColor} />
-        </Box>
-        <Box>
-          <Typography gutterBottom>FontSize</Typography>
-          <Slider value={fontSizePx} max={500} onChangeCommitted={handleChangeFontSizePx} valueLabelDisplay="auto" />
-        </Box>
-        <Box>
-          <Typography gutterBottom>Scale</Typography>
-          <Slider value={scale} max={3.0} step={0.1} onChangeCommitted={handleChangeScale} valueLabelDisplay="auto" />
-        </Box>
-      </>
-    );
-  };
-
   return (
     <>
       <CssBaseline />
@@ -250,7 +210,7 @@ function App() {
           {isLoaded && (
             <Box mb={2}>
               <Buttons />
-              <ControlPanel />
+              <ControlPanel defaultSetting={setting} onChange={handleChangeSettings} />
             </Box>
           )}
           <Grid container alignItems="center" justify="center">
