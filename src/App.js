@@ -13,7 +13,8 @@ function App() {
   const defaultSetting = {
     fontSizePx: 100,
     fontColor: "#FFFFFF",
-    scale: 1.0
+    scale: 1.0,
+    isStroke: true
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -40,25 +41,25 @@ function App() {
     image.src = file;
     image.onload = () => {
       setBaseImage(image);
-      drawImage(image, setting.fontSizePx, setting.fontColor, setting.scale);
+      drawImage(image, setting);
     };
     image.onerror = () => {
       setIsError(true);
     };
   };
 
-  const drawImage = (image, fontSizePx, fontColor, scale) => {
+  const drawImage = (image, setting) => {
     const view = document.querySelector(".canvas");
     const ctx = view.getContext("2d");
 
     ctx.clearRect(0, 0, view.width, view.height);
 
     // imageの大きさとスケーリングを考慮した大きさでcanvasのリサイズ
-    view.width = image.width * scale;
-    view.height = image.height * scale;
+    view.width = image.width * setting.scale;
+    view.height = image.height * setting.scale;
 
     drawBaseImage(ctx, image, view);
-    drawLgtmTextOverImage(ctx, fontSizePx, fontColor, view);
+    drawLgtmTextOverImage(ctx, setting, view);
     renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
@@ -72,16 +73,18 @@ function App() {
     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, view.width, view.height);
   };
 
-  const drawLgtmTextOverImage = (ctx, fontSizePx, fontColor, view) => {
+  const drawLgtmTextOverImage = (ctx, setting, view) => {
     ctx.save();
-    ctx.font = `bolder ${fontSizePx}px "Helvetica", "MS Pゴシック"`;
+    ctx.font = `bolder ${setting.fontSizePx}px "Helvetica", "MS Pゴシック"`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = fontColor;
+    ctx.fillStyle = setting.fontColor;
     ctx.fillText(lgtmText, view.width / 2, view.height / 2, view.width);
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = strokeColor;
-    ctx.strokeText(lgtmText, view.width / 2, view.height / 2, view.width);
+    if (setting.isStroke) {
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = strokeColor;
+      ctx.strokeText(lgtmText, view.width / 2, view.height / 2, view.width);
+    }
     ctx.restore();
   };
 
@@ -127,13 +130,9 @@ function App() {
     generateImage(inputUrlEl.current.value);
   };
 
-  const handleChangeSettings = setting => {
-    drawImage(baseImage, setting.fontSizePx, setting.fontColor, setting.scale);
-    setSetting({
-      fontSizePx: setting.fontSizePx,
-      fontColor: setting.fontColor,
-      scale: setting.scale
-    });
+  const handleChangeSettings = newSetting => {
+    drawImage(baseImage, newSetting);
+    setSetting(newSetting);
   };
 
   const AlertError = () => {
