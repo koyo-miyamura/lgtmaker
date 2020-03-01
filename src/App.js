@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
 import Fileupload from "Fileupload";
+import ControlButtons from "ControlButtons";
 import ControlPanel from "ControlPanel";
-import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
-import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
-import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
+import { Button, Container, CssBaseline, Paper, Grid, Typography, TextField } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
@@ -182,27 +181,6 @@ function App() {
     );
   };
 
-  const Buttons = () => {
-    return (
-      <Grid container alignItems="center" justify="center">
-        <ButtonGroup color="primary" aria-label="outlined primary button group">
-          <Button className="copy" onClick={handleClickCopy}>
-            <FileCopyIcon />
-            <Typography variant="button" style={{ textTransform: "none" }}>
-              Copy as html
-            </Typography>
-          </Button>
-          <Button className="download" onClick={handleClickDownload}>
-            <CloudDownloadIcon />
-            <Typography variant="button" style={{ textTransform: "none" }}>
-              Download
-            </Typography>
-          </Button>
-        </ButtonGroup>
-      </Grid>
-    );
-  };
-
   return (
     <>
       <CssBaseline />
@@ -212,7 +190,7 @@ function App() {
           <InputFile />
           {isLoaded && (
             <Box mb={2}>
-              <Buttons />
+              <ControlButtons onClickCopy={handleClickCopy} onClickDownload={handleClickDownload} />
               <ControlPanel defaultSetting={setting} onChange={handleChangeSettings} />
             </Box>
           )}
