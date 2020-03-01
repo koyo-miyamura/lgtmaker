@@ -12,7 +12,8 @@ function App() {
     fontSizePx: 100,
     fontColor: "#FFFFFF",
     scale: 1.0,
-    isStroke: true
+    isStroke: true,
+    font: "Helvetica"
   };
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,18 +47,18 @@ function App() {
     };
   };
 
-  const drawImage = (image, setting) => {
+  const drawImage = (image, drawSetting) => {
     const view = document.querySelector(".canvas");
     const ctx = view.getContext("2d");
 
     ctx.clearRect(0, 0, view.width, view.height);
 
     // imageの大きさとスケーリングを考慮した大きさでcanvasのリサイズ
-    view.width = image.width * setting.scale;
-    view.height = image.height * setting.scale;
+    view.width = image.width * drawSetting.scale;
+    view.height = image.height * drawSetting.scale;
 
     drawBaseImage(ctx, image, view);
-    drawLgtmTextOverImage(ctx, setting, view);
+    drawLgtmTextOverImage(ctx, drawSetting, view);
     renderGeneratedImage(view.toDataURL("image/jpeg"));
   };
 
@@ -71,14 +72,14 @@ function App() {
     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, view.width, view.height);
   };
 
-  const drawLgtmTextOverImage = (ctx, setting, view) => {
+  const drawLgtmTextOverImage = (ctx, drawSetting, view) => {
     ctx.save();
-    ctx.font = `bolder ${setting.fontSizePx}px "Helvetica", "MS Pゴシック"`;
+    ctx.font = `bolder ${drawSetting.fontSizePx}px ${drawSetting.font}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = setting.fontColor;
+    ctx.fillStyle = drawSetting.fontColor;
     ctx.fillText(lgtmText, view.width / 2, view.height / 2, view.width);
-    if (setting.isStroke) {
+    if (drawSetting.isStroke) {
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = strokeColor;
       ctx.strokeText(lgtmText, view.width / 2, view.height / 2, view.width);
@@ -134,8 +135,8 @@ function App() {
   };
 
   const handleChangeSettings = newSetting => {
-    drawImage(baseImage, newSetting);
     setSetting(newSetting);
+    drawImage(baseImage, newSetting);
   };
 
   const AlertError = () => {

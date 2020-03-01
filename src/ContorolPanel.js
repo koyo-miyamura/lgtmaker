@@ -1,5 +1,5 @@
 import ColorPicker from "material-ui-color-picker";
-import { Typography, Slider, Checkbox, Grid, Box } from "@material-ui/core";
+import { Typography, Slider, Checkbox, Grid, Box, Select, MenuItem } from "@material-ui/core";
 import React, { useState } from "react";
 
 function ControlPanel(props) {
@@ -30,6 +30,24 @@ function ControlPanel(props) {
     changeSetting(newSetting);
   };
 
+  const fontItems = [
+    "Helvetica",
+    "Impact",
+    "arial black",
+    "MS Pゴシック",
+    "Times New Roman",
+    "Hiragino Kaku Gothic StdN",
+    "cursive",
+    "fantasy",
+    "Courier New",
+    "BatangChe"
+  ];
+
+  const handleChangeFont = e => {
+    const newSetting = { ...setting, font: e.target.value };
+    changeSetting(newSetting);
+  };
+
   return (
     <Box mt={2}>
       <Grid container>
@@ -43,9 +61,19 @@ function ControlPanel(props) {
             onChange={handleChangeColor}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
           <Typography gutterBottom>Outline</Typography>
           <Checkbox checked={setting.isStroke} value="secondary" color="primary" onChange={handleChangeStroke} />
+        </Grid>
+        <Grid item xs={3}>
+          <Typography gutterBottom>Font</Typography>
+          <Select value={setting.font} onChange={handleChangeFont}>
+            {fontItems.map(item => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
         </Grid>
         <Grid item xs={12}>
           <Typography gutterBottom>FontSize</Typography>
