@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
+import InputUrl from "InputUrl";
 import Fileupload from "Fileupload";
 import ControlButtons from "ControlButtons";
 import ControlPanel from "ControlPanel";
-import { Button, Container, CssBaseline, Paper, Grid, Typography, TextField } from "@material-ui/core";
-import Box from "@material-ui/core/Box";
+import { Container, CssBaseline, Paper, Grid, Box } from "@material-ui/core";
 import { Alert, AlertTitle } from "@material-ui/lab";
 
 function App() {
@@ -149,28 +149,6 @@ function App() {
     );
   };
 
-  const InputURL = () => {
-    return (
-      <Box mb={2}>
-        {isError && <AlertError />}
-        <Paper variant="outlined" elevation={3} square>
-          <Grid container>
-            <Grid item sm={10} xs={9}>
-              <TextField inputRef={inputUrlEl} label="URL" placeholder="URL" variant="outlined" fullWidth />
-            </Grid>
-            <Grid item sm={2} xs={3}>
-              <Button color="primary" style={{ height: "100%" }} onClick={handleUploadImageFromURL} fullWidth>
-                <Typography variant="button" style={{ textTransform: "none" }}>
-                  Submit
-                </Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        </Paper>
-      </Box>
-    );
-  };
-
   const InputFile = () => {
     return (
       <Box mb={2}>
@@ -186,7 +164,8 @@ function App() {
       <CssBaseline />
       <Container maxWidth="sm">
         <Box my={4}>
-          <InputURL />
+          {isError && <AlertError />}
+          <InputUrl inputRef={inputUrlEl} onSubmit={handleUploadImageFromURL} />
           <InputFile />
           {isLoaded && (
             <Box mb={2}>
