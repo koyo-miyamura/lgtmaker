@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import Fileupload from "Fileupload";
-import ControlPanel from "ContorolPanel";
+import ControlPanel from "ControlPanel";
 import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
 import CloudDownloadIcon from "@material-ui/icons/CloudDownloadOutlined";
 import FileCopyIcon from "@material-ui/icons/FileCopyOutlined";
