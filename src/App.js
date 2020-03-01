@@ -1,6 +1,4 @@
 import React, { useState, useRef } from "react";
-import "App.css";
-import Clipboard from "clipboard";
 import Fileupload from "Fileupload";
 import ControlPanel from "ContorolPanel";
 import { Button, Container, CssBaseline, Paper, ButtonGroup, Grid, Typography, TextField } from "@material-ui/core";
@@ -101,19 +99,24 @@ function App() {
       } else {
         node.replaceChild(outputImage, node.firstChild);
       }
-
-      listenCopyEvent(data);
     };
   };
 
-  const listenCopyEvent = data => {
+  const handleClickCopy = () => {
+    const view = document.querySelector(".canvas");
+    const data = view.toDataURL("image/jpeg");
     const copyText = `<img src='${data}' />`;
-    const clipboard = new Clipboard(".copy", {
-      text: () => copyText
-    });
-    clipboard.on("success", () => {
+
+    const copyFrom = document.createElement("textarea");
+    copyFrom.textContent = copyText;
+
+    const bodyElm = document.getElementsByTagName("body")[0];
+    bodyElm.appendChild(copyFrom);
+
+    copyFrom.select();
+    if (document.execCommand("copy")) {
       alert("コピーしました");
-    });
+    }
   };
 
   const handleClickDownload = () => {
@@ -182,7 +185,7 @@ function App() {
     return (
       <Grid container alignItems="center" justify="center">
         <ButtonGroup color="primary" aria-label="outlined primary button group">
-          <Button className="copy">
+          <Button className="copy" onClick={handleClickCopy}>
             <FileCopyIcon />
             <Typography variant="button" style={{ textTransform: "none" }}>
               Copy as html
