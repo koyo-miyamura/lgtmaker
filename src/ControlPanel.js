@@ -20,6 +20,11 @@ function ControlPanel(props) {
     changeSetting(newSetting);
   };
 
+  const handleChangeOffsetYPx = (_, value) => {
+    const newSetting = { ...setting, offsetYPx: value };
+    changeSetting(newSetting);
+  };
+
   const handleChangeScale = (_, value) => {
     const newSetting = { ...setting, scale: value };
     changeSetting(newSetting);
@@ -53,37 +58,53 @@ function ControlPanel(props) {
   return (
     <Box mt={2}>
       <Grid container>
-        <Grid item xs={6}>
-          <Typography gutterBottom>Color</Typography>
-          <ColorPicker
-            value={setting.fontColor}
-            defaultValue={colorText}
-            name="color"
-            placeholder="color"
-            onChange={handleChangeColor}
-          />
+        <Grid container item xs={10}>
+          <Grid item xs={4}>
+            <Typography gutterBottom>Color</Typography>
+            <ColorPicker
+              value={setting.fontColor}
+              defaultValue={colorText}
+              name="color"
+              placeholder="color"
+              onChange={handleChangeColor}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Typography gutterBottom>Outline</Typography>
+            <Checkbox checked={setting.isStroke} value="secondary" color="primary" onChange={handleChangeStroke} />
+          </Grid>
+          <Grid item xs={4}>
+            <Typography gutterBottom>Font</Typography>
+            <Select value={setting.font} onChange={handleChangeFont}>
+              {fontItems.map(item => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography gutterBottom>FontSize</Typography>
+            <Slider value={setting.fontSizePx} max={500} onChange={handleChangeFontSizePx} valueLabelDisplay="auto" />
+          </Grid>
+          <Grid item xs={12}>
+            <Typography gutterBottom>Scale</Typography>
+            <Slider value={setting.scale} max={3.0} step={0.1} onChange={handleChangeScale} valueLabelDisplay="auto" />
+          </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <Typography gutterBottom>Outline</Typography>
-          <Checkbox checked={setting.isStroke} value="secondary" color="primary" onChange={handleChangeStroke} />
-        </Grid>
-        <Grid item xs={3}>
-          <Typography gutterBottom>Font</Typography>
-          <Select value={setting.font} onChange={handleChangeFont}>
-            {fontItems.map(item => (
-              <MenuItem key={item} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography gutterBottom>FontSize</Typography>
-          <Slider value={setting.fontSizePx} max={500} onChange={handleChangeFontSizePx} valueLabelDisplay="auto" />
-        </Grid>
-        <Grid item xs={12}>
-          <Typography gutterBottom>Scale</Typography>
-          <Slider value={setting.scale} max={3.0} step={0.1} onChange={handleChangeScale} valueLabelDisplay="auto" />
+
+        <Grid container item alignItems="center" direction="column" xs={2}>
+          <Grid item xs={10}>
+            <Typography gutterBottom>OffsetY</Typography>
+            <Slider
+              orientation="vertical"
+              value={setting.offsetYPx}
+              min={-300}
+              max={300}
+              onChange={handleChangeOffsetYPx}
+              valueLabelDisplay="auto"
+            />
+          </Grid>
         </Grid>
       </Grid>
     </Box>

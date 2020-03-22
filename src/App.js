@@ -11,6 +11,7 @@ function App() {
     fontSizePx: 100,
     fontColor: "#FFFFFF",
     scale: 1.0,
+    offsetYPx: 0,
     isStroke: true,
     font: "Helvetica"
   };
@@ -77,12 +78,15 @@ function App() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = drawSetting.fontColor;
-    ctx.fillText(lgtmText, view.width / 2, view.height / 2, view.width);
+    const textY = view.height / 2 + drawSetting.offsetYPx;
+
+    ctx.fillText(lgtmText, view.width / 2, textY, view.width);
     if (drawSetting.isStroke) {
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = strokeColor;
-      ctx.strokeText(lgtmText, view.width / 2, view.height / 2, view.width);
+      ctx.strokeText(lgtmText, view.width / 2, textY, view.width);
     }
+
     ctx.restore();
   };
 
