@@ -30,6 +30,8 @@ function ControlPanel(props) {
     changeSetting(newSetting);
   };
 
+  const colorText = "Color";
+
   const fontItems = [
     "Helvetica",
     "Impact",
@@ -55,7 +57,7 @@ function ControlPanel(props) {
           <Typography gutterBottom>Color</Typography>
           <ColorPicker
             value={setting.fontColor}
-            defaultValue={setting.fontColor}
+            defaultValue={colorText}
             name="color"
             placeholder="color"
             onChange={handleChangeColor}
